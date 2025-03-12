@@ -13,3 +13,4 @@ Pregunta1 <-dbGetQuery(portaldb,"SELECT count(reviewid), artist FROM reviews GRO
 
 Pregunta2 <-dbGetQuery(portaldb,"SELECT avg(score) , reviewid, pub_year FROM reviews GROUP by reviewid  HAVING pub_year BETWEEN 2010 and 2014 ORDER by avg(score) DESC ;")
 
+Pregunta3 <-dbGetQuery(portaldb,"SELECT label, count(reviewid) FROM labels GROUP by label ORDER by count(reviewid) desc limit 5;")
