@@ -21,6 +21,14 @@ reviews <- dbGetQuery(dbdb, "SELECT * FROM reviews")
 years <- dbGetQuery(dbdb, "SELECT * FROM years")
 
 # Formateo de las variables en las entidades para poder ser utilizadas
-artists <- factor()
+genres$genre <- as.factor(genres$genre)
+reviews$best_new_music <- as.factor(reviews$best_new_music)
+summary(reviews)
+summary(genres)
 
+#Primeros Gráficos
+plot(genres$genre)
+hist(reviews$score)
+plot(reviews$best_new_music, reviews$score)
+plot(reviews$best_new_music)
 
