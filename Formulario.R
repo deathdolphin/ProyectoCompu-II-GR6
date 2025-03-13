@@ -17,3 +17,5 @@ Pregunta3 <-dbGetQuery(portaldb,"SELECT label, count(reviewid) FROM labels GROUP
 
 Pregunta4 <-dbGetQuery(portaldb,"SELECT count(title), title from reviews group by title HAVING  best_new_music=1 and pub_year=2016 ;  ")
 "Esta pregunta tiene la particularidad de que para ver el resultado no se ve los datos del dataframe si no la cantidad de datos del dataframe, eneste caso 90 albumes recibieron el reconociemiento"
+
+Pregunta5 <-dbGetQuery(portaldb," SELECT genre, AVG(reviews.score) AS average_score FROM genres JOIN reviews ON reviews.reviewid = genres.reviewid group by genre ORDER BY average_score DESC LIMIT 3; ")
