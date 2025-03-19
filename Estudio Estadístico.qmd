@@ -35,9 +35,11 @@ Jesus Ochoa
 
 ## Introducción
 
-Las reseñas o críticas de multimedia (música, películas, software, etc...), han gozado de una continuada y creciente popularidad desde la adopción masiva de los computadores y el internet por parte del consumidor promedio (XionYing Cen, et al., 2022). Su atractivo radica en la capacidad de las reseñas para funcionar como guía para el consumidor, ofreciendo información y opinión acerca de un producto multimedia antes de consumirlo, dando un apoyo para la toma de decisión en si invertir los recursos necesarios como tiempo y dinero que puedan ser dirigidos a un producto considerado mejor. Sin embargo, un potencial defecto de las reseñas de todo tipo, particularmente de aquellas que evalúan contenido artístico, es la vulnerabilidad a fuerte sesgos por parte de aquel que hace las críticas.
+Las reseñas o críticas de multimedia (música, películas, software, etc...), han gozado de una continuada y creciente popularidad desde la adopción masiva de los computadores y el internet por parte del consumidor promedio (XionYing Cen, et al., 2022).
 
-Se ha encontrado que las reseñas online suelen ser bastante polarizadas, dibujando una curva con un sesgo positivo y colas gruesas, representando una asimetría positiva con una alta cantidad de valores atípicos en ambos extremos (Fritz 2016), por lo que se ha puesto en duda que tan útiles son las reseñas en realidad. Este estudio evalúa una base de datos extraída de Kaggle, que contiene más de 18.000 reseñas de álbumes musicales producidas por Pitchfork.com, en el que se observará si existe dicho sesgo en cuanto a críticas positivas y se explorará la posibilidad de sesgo respecto a géneros musicales, pues Pitchfork.com ha producido mayoritariamente reseñas de álbumes de rock, planteando la posibilidad de calificaciones por encima o debajo de la media.
+Su atractivo radica en la capacidad de las reseñas para funcionar como guía para el consumidor, ofreciendo información y opinión acerca de un producto multimedia antes de consumirlo, dando un apoyo para la toma de decisión en si invertir los recursos necesarios como tiempo y dinero que puedan ser dirigidos a un producto considerado mejor. Sin embargo, un potencial defecto de las reseñas de todo tipo, particularmente de aquellas que evalúan contenido artístico, es la vulnerabilidad a fuerte sesgos por parte de aquel que hace las críticas.
+
+Se ha encontrado que las reseñas online suelen ser bastante polarizadas, dibujando una curva con un sesgo positivo y colas gruesas, representando una asimetría positiva con una alta cantidad de valores atípicos en ambos extremos (Fritz 2016), por lo que se ha puesto en duda que tan útiles son las reseñas en realidad. Este estudio evalúa una base de datos extraída de Kaggle, que contiene más de 18.000 reseñas de álbumes musicales producidas por Pitchfork.com, en el que se observará si existe dicho sesgo en cuanto a críticas positivas y se explorará la posibilidad de sesgo respecto a géneros musicales, pues Pitchfork.com ha producido mayoritariamente reseñas de álbumes de rock, planteando la posibilidad de calificaciones por encima o debajo de la media.
 
 ## Contenido
 
@@ -52,7 +54,7 @@ if (!require("pacman")) install.packages("pacman")
 
 pacman::p_load(
   tidyverse, pacman, DescTools, moments, forcats, scales, DBI, RSQLite, dbplyr, odbc, flextable,
-  ftExtra, svglite,ggplot2
+  ftExtra, svglite,ggplot2, kableExtra
 )
 ```
 
@@ -89,17 +91,22 @@ labels <- dbGetQuery(dbdb, "SELECT * FROM labels")
 reviews <- dbGetQuery(dbdb, "SELECT * FROM reviews")
 years <- dbGetQuery(dbdb, "SELECT * FROM years")
 
-# Formateo de las variables en las entidades para poder ser utilizadas
+#library(kableExtra)
+
 genres$genre <- as.factor(genres$genre)
 reviews$best_new_music <- as.factor(reviews$best_new_music)
 summary(reviews)
-summary(genres)
+
+# Resumen de 'genres'
+tabla_genres <- kable(summary(genres), caption = "Resumen de genres") %>%
+  kable_styling(bootstrap_options = "striped", full_width = F)
+
+# Mostrar las tabla
+tabla_genres
+
 
 #Primeros Gráficos
-plot(genres$genre)
 hist(reviews$score)
-plot(reviews$best_new_music, reviews$score)
-plot(reviews$best_new_music)
 
 #Juntar Géneros y demás variables importantes
 tb_new <- dbGetQuery(dbdb, "SELECT reviews.reviewid, reviews.best_new_music,
@@ -127,7 +134,7 @@ tb_best <- tb_2 %>% filter(best_new_music == 1)
 
 
 ggplot(tb_2, aes(x = reorder(genre, N), na.rm = TRUE, y = avg)) +
-  geom_col(fill = "blue") +theme_minimal()
+  geom_col(fill = "blue") +theme_minimal() +coord_flip()
 ```
 
 ### 1. 2Grafico Proporciones de Best new Music.
@@ -138,7 +145,7 @@ ggplot(tb_2, aes(x = reorder(genre, N), na.rm = TRUE, y = avg)) +
 #| warning: true
 
 ggplot(tb_best, aes(x = fct_infreq(genre), y = after_stat(prop), group = 1)) +
-  geom_bar( fill = "lightpink", colour = "darkgray") + theme_minimal() +
+  geom_bar( fill = "lightpink", colour = "darkgray") + theme_minimal() +coord_flip() +
   scale_y_continuous(labels = scales::percent)
 
 ```
