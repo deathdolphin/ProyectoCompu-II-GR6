@@ -4,8 +4,10 @@ author: "Armando Delfin, Gabriel Di Buongrazio y Miguel Rodriguez"
 format: pdf
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+ 
 
 ```
 
@@ -19,7 +21,7 @@ Aquí irá toda la introducción!
 
 Aquí irá el contenido.
 
-```{r}
+```{r, echo=FALSE}
 #| label: load_libraries
 #| message: false
 #| warning: false
@@ -32,7 +34,7 @@ pacman::p_load(
 )
 ```
 
-```{r}
+```{r, echo=FALSE}
 #| label: connect_database
 #| message: false
 #| warning: false
@@ -50,7 +52,7 @@ con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 #| label: your_graphics_chunk
 #| message: false
 #| warning: false
