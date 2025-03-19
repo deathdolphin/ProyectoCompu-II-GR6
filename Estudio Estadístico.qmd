@@ -1,51 +1,46 @@
 ---
 title: "Estudio Estadístico Sobre la Presencia de Sesgo Crítico en Reseñas Musicales de Pitchfork.com"
 author: "Armando Delfin, Gabriel Di Buongrazio y Miguel Rodriguez"
-institute: "Universidad Central de Venezuela (UCV), Escuela de Estadística y Ciencias Actuariales"
 format: pdf
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
+
+
 knitr::opts_chunk$set(echo = TRUE)
 
  
 
 ```
 
+"Universidad Central de Venezuela (UCV), Escuela de Estadística y Ciencias Actuariales"
+
+\
+
+\
+
+\
+
+\
+
+\
+
+\
+
+\
+
+\
+
 ::: {style="text-align: left; position: absolute; top: 20px; left: 20px;"}
 **Docente:**
+
+\
 Jesus Ochoa
 :::
 
 \
 
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-\
-
-## Introducción
+## Introducción 
 
 Aquí irá toda la introducción!
 
@@ -77,8 +72,7 @@ pacman::p_load(
 # Formato de la ruta : "C:/users/*tu nombre de usuario*/*La carpeta de la db*/*nombre de la db*
 
 # Ruta a la base de datos (asegúrate de que sea correcta)
-db_path <- "C:/Users/arman/Proyect.database/pitchforkcopy.sqlite"
-
+db_path <- "C:/Users/migue/OneDrive/Documentos/GitHub/ProyectoCompu-II-GR6/database.sqlite"
 # Establecer la conexión
 con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
 
