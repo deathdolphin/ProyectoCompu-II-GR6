@@ -1,6 +1,6 @@
 # Instalación y puesta en funcionanmiento de los paquetes
 pacman::p_load(tidyverse, pacman, DescTools, moments, forcats, scales, DBI, 
-               RSQLite, dbplyr,odbc)
+               RSQLite, dbplyr, odbc, flextable, ftExtra, svglite)
 
 # Conectarse a la base de datos SQL por medio de R.
 # Importante tener el archivo en la carpeta usuario.
