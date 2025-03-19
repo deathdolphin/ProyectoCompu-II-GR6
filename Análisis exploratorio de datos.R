@@ -45,5 +45,8 @@ tb_1 <- tb_new[complete.cases(tb_new),]
 tb_2 <- tb_1 %>% mutate (n = 1) %>% group_by(genre) %>% mutate(N = sum(n)) %>%
   mutate(avg = mean(score)/N)
 
+# Dataframe para análisis sobre álbumes galardonados best new music
+tb_best <- tb_2 %>% filter(best_new_music == 1)
+
 
 
