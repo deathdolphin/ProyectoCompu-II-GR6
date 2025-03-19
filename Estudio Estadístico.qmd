@@ -129,7 +129,7 @@ tb_1 <- tb_new[complete.cases(tb_new),]
 
 # Preparar dataframe para cálculos necesarios
 tb_2 <- tb_1 %>% mutate (n = 1) %>% group_by(genre) %>% mutate(N = sum(n)) %>%
-  mutate(avg = mean(score)/N)
+  mutate(avg = mean(score))
 
 # Dataframe para análisis sobre álbumes galardonados best new music
 tb_best <- tb_2 %>% filter(best_new_music == 1)
@@ -137,17 +137,32 @@ tb_best <- tb_2 %>% filter(best_new_music == 1)
 
 ### 1.1 Grafico Average
 
+Un aspecto que es interesante evaluar es el de los promedios en puntuación de cada género musical. Diferencias muy grandes entre cada uno puede señalizar una presencia de sesgo, preferencia o desdén muy notorio por un género en particular. Por lo tanto realizamos el siguiente gráfico:
+
 ```{r, echo=FALSE}
 #| label: graphics_Average
 #| message: false
 #| warning: false
 
 
-ggplot(tb_2, aes(x = reorder(genre, N), na.rm = TRUE, y = avg)) +
-  geom_col(fill = "blue") +theme_minimal() +coord_flip()
+ggplot(tb_2, aes(x = reorder(genre, avg), na.rm = TRUE, y = avg)) +
+  geom_point(colour = "blue", size = 5) +theme_minimal() +coord_flip() +  labs(title = "Puntuación Promedio de Cada Género",
+       x = "",
+       y = "Puntuación Promedio") +
+  theme(
+        panel.grid.major = element_line(colour = "gray"),
+        panel.grid.minor = element_line(colour = "gray"))
 ```
 
+En el podemos ver que, en término nominales, no hay mucha diferencia entre cada uno, con un promedio mínimo de 6.884 y uno máximo de 7.430, el rango es de 0.546.
+
+Además podemos ver que la música gobal experimental y jazz tienen las mejores puntuaciones promedio, y que electronico, pop y r&b las peores.
+
 ### 1.2 Grafico Proporciones de Best new Music.
+
+Pitchfork.com tiene una calificación especial llamada 'Best new music', en el que se premia por ser una entrega músical que define el año o temporada en el que fue creada. Al explorar como se distribuye por género, podemos observar, desde otro ángulo si existe preferencia por un género por encima del otro.
+
+Sin embargo, esto debe de estar acompañado con un análisis sobre la proporción de albumes galardonados 'best new music' dentro de cada género, pues no todos los géneros tienen una cantidad equivalente de reseñas en Pitchfork.com, tampoco en la muestra observada. La tabla previamente discutida debe ser utilizada como apoyo.
 
 ```{r echo=FALSE}
 #| label: graphics_Proporciones
@@ -156,34 +171,46 @@ ggplot(tb_2, aes(x = reorder(genre, N), na.rm = TRUE, y = avg)) +
 
 ggplot(tb_best, aes(x = fct_infreq(genre), y = after_stat(prop), group = 1)) +
   geom_bar( fill = "lightpink", colour = "darkgray") + theme_minimal() +coord_flip() +
-  scale_y_continuous(labels = scales::percent)
+  scale_y_continuous(labels = scales::percent) +
+   labs(title = "Distribución de Álbumes Best New Music por Género Musical",
+        subtitle = "943 Álbumes Galardonados por Pitchfork.com",
+        x = "",
+        y = "Porcentaje")
 
 ```
 
+Más de la mitad de álbumes galardonados best new music son álbumes de rock, lo cual concuerda perfectamente con la tabla anterior mencionada en el que podemos ver que más de la mitad de reseñas observadas pertenecen a este género, lo mismo parece ocurrir con el género experimental. Además de eso, vemos los géneros menos representativos de las entregas best new music, son global jazz y metal. Algo extraño considerando que fueron los álbumes con una mayor puntuación en promedio, pudiendo ser explicado por la poca frecuencia absoluta de las reseñas de estos géneros en la muestra observada.
+
 ### 1.3 Histograma de Reviews
+
+Por último, se evalua un fenómeno que parece ser frecuente en el ámbito de las reseñas de todo tipo, una distribución de puntajes con una marcada asimetría positiva, y una cantidad de datos extremos y atípicos muy alta. Para eso se emplea un histograma:
 
 ```{r echo=FALSE}
 #| label: graphics_histograma
 #| message: false
 #| warning: true
 
-datos <- as.numeric(reviews$score)
-
-ggplot(data.frame(score = datos), aes(x = score)) +
-  geom_histogram(binwidth = 1, fill = "lightgreen", color = "black") + # Ajusta binwidth aquí
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 20),
-    axis.title = element_text(size = 16),
-    axis.text = element_text(size = 14)
-  ) +
-  labs(title = "Histograma de Reviews", x = "Puntuación", y = "Frecuencia")
+ggplot(tb_2, aes(x = score)) + geom_bar(fill = "darkgreen") + theme_minimal() +
+  labs(title = "Distribución de las Puntuaciones Otorgadas a Álbumes Músicales",
+       subtitle = "18.393 Álbumes Calificados por Pitchfork.com",
+       x = "Puntuación",
+       y = "")
 ```
+
+En el cual, se puede ver, efectivamente una marcada asímetria positiva, con una media aritmética igual a 7 puntos y una mediana igual a 7.2. También vemos que una puntuación de 10 que siendo la máxima, tiene una frecuencia decididamente desproporcionada respecto al resto de la distribucón. Aquí se denota un sesgo positivo y reseñas polarizadas.
 
 ## Conclusión
 
-Aquí irá toda la conclusión!
+La muestra observada de 18.393 reseñas de álbumes músicales de Pitchfork.com parece presentar sesgos que ya son conocidos en la literatura sobre críticas de productos para el consumidor, una gran mayoría de reseñas positivas, muy positivas, además de cantidades anómalas de puntuaciones extremas, o muy positivas, o muy negativas.
+
+Sin embargo, en la particularidad que presenta la música como producto, la división por género, no parece haber una preferncia de uno por encima de los otros.
 
 ## Bibliografía
 
-Aquí irá toda la bibliografía!
+Tao Chen, XiongTing Cen, Meng Qi, Yi chen Lan
+
+*The impacy of online reviews on cosumers purchasing decision, 2022*
+
+Pitchfork.com
+
+Kaggle
