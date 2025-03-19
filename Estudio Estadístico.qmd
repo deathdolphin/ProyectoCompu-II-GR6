@@ -29,7 +29,7 @@ Aquí irá el contenido.
 if (!require("pacman")) install.packages("pacman")
 
 pacman::p_load(
-  tidyverse, DescTools, moments, forcats, scales, DBI, RSQLite, dbplyr, odbc, flextable,
+  tidyverse, pacman, DescTools, moments, forcats, scales, DBI, RSQLite, dbplyr, odbc, flextable,
   ftExtra, svglite
 )
 ```
@@ -48,7 +48,7 @@ db_path <- "C:/Users/arman/Proyect.database/pitchforkcopy.sqlite"
 # Establecer la conexión
 con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
 
-# Importante usar la función dbDisconnect(dbdb) antes de cerrar la sesión de R.
+# Importante usar la función dbDisconnect(con) antes de cerrar la sesión de R.
 
 ```
 
