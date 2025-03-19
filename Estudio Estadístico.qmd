@@ -6,11 +6,7 @@ format: pdf
 
 ```{r setup, include=FALSE, echo=FALSE}
 
-
 knitr::opts_chunk$set(echo = TRUE)
-
- 
-
 ```
 
 "Universidad Central de Venezuela (UCV), Escuela de Estadística y Ciencias Actuariales"
@@ -34,21 +30,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ::: {style="text-align: left; position: absolute; top: 20px; left: 20px;"}
 **Docente:**
 
-\
 Jesus Ochoa
 :::
 
-\
-
 ## Introducción
 
-Aquí irá toda la introducción!
+Las reseñas o críticas de multimedia (música, películas, software, etc...), han gozado de una continuada y creciente popularidad desde la adopción masiva de los computadores y el internet por parte del consumidor promedio (XionYing Cen, et al., 2022). Su atractivo radica en la capacidad de las reseñas para funcionar como guía para el consumidor, ofreciendo información y opinión acerca de un producto multimedia antes de consumirlo, dando un apoyo para la toma de decisión en si invertir los recursos necesarios como tiempo y dinero que puedan ser dirigidos a un producto considerado mejor. Sin embargo, un potencial defecto de las reseñas de todo tipo, particularmente de aquellas que evalúan contenido artístico, es la vulnerabilidad a fuerte sesgos por parte de aquel que hace las críticas.
+
+Se ha encontrado que las reseñas online suelen ser bastante polarizadas, dibujando una curva con un sesgo positivo y colas gruesas, representando una asimetría positiva con una alta cantidad de valores atípicos en ambos extremos (Fritz 2016), por lo que se ha puesto en duda que tan útiles son las reseñas en realidad. Este estudio evalúa una base de datos extraída de Kaggle, que contiene más de 18.000 reseñas de álbumes musicales producidas por Pitchfork.com, en el que se observará si existe dicho sesgo en cuanto a críticas positivas y se explorará la posibilidad de sesgo respecto a géneros musicales, pues Pitchfork.com ha producido mayoritariamente reseñas de álbumes de rock, planteando la posibilidad de calificaciones por encima o debajo de la media.
 
 ## Contenido
 
 ### 1. Muestra de datos
-
-Grafico Average
 
 ```{r, echo=FALSE}
 #| label: load_libraries
@@ -59,7 +52,7 @@ if (!require("pacman")) install.packages("pacman")
 
 pacman::p_load(
   tidyverse, pacman, DescTools, moments, forcats, scales, DBI, RSQLite, dbplyr, odbc, flextable,
-  ftExtra, svglite
+  ftExtra, svglite,ggplot2
 )
 ```
 
@@ -74,27 +67,76 @@ pacman::p_load(
 # Ruta a la base de datos (asegúrate de que sea correcta)
 db_path <- "C:/Users/migue/OneDrive/Documentos/GitHub/ProyectoCompu-II-GR6/database.sqlite"
 # Establecer la conexión
-con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
+dbdb <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
 
-# Importante usar la función dbDisconnect(con) antes de cerrar la sesión de R.
+# Importante usar la función dbDisconnect(dbdb) antes de cerrar la sesión de R.
 
 ```
+
+```{r, echo=FALSE}
+#| label: scrips
+#| message: false
+#| warning: false
+
+#Verificar entidades
+dbListTables(dbdb)
+
+# Trasladar todas las entidades SQL a dataframes de R.
+artists <- dbGetQuery(dbdb, "SELECT * FROM artists")
+content <- dbGetQuery(dbdb, "SELECT * FROM content")
+genres <- dbGetQuery(dbdb, "SELECT * FROM genres")
+labels <- dbGetQuery(dbdb, "SELECT * FROM labels")
+reviews <- dbGetQuery(dbdb, "SELECT * FROM reviews")
+years <- dbGetQuery(dbdb, "SELECT * FROM years")
+
+# Formateo de las variables en las entidades para poder ser utilizadas
+genres$genre <- as.factor(genres$genre)
+reviews$best_new_music <- as.factor(reviews$best_new_music)
+summary(reviews)
+summary(genres)
+
+#Primeros Gráficos
+plot(genres$genre)
+hist(reviews$score)
+plot(reviews$best_new_music, reviews$score)
+plot(reviews$best_new_music)
+
+#Juntar Géneros y demás variables importantes
+tb_new <- dbGetQuery(dbdb, "SELECT reviews.reviewid, reviews.best_new_music,
+reviews.score, genres.genre
+                     FROM reviews INNER JOIN genres
+                     ON reviews.reviewid = genres.reviewid;")
+
+#Limpiar NA's
+tb_1 <- tb_new[complete.cases(tb_new),]
+
+# Preparar dataframe para cálculos necesarios
+tb_2 <- tb_1 %>% mutate (n = 1) %>% group_by(genre) %>% mutate(N = sum(n)) %>%
+  mutate(avg = mean(score)/N)
+
+# Dataframe para análisis sobre álbumes galardonados best new music
+tb_best <- tb_2 %>% filter(best_new_music == 1)
+```
+
+### 1. 1 Grafico Average
 
 ```{r, echo=FALSE}
 #| label: graphics_Average
 #| message: false
 #| warning: false
 
+
 ggplot(tb_2, aes(x = reorder(genre, N), na.rm = TRUE, y = avg)) +
-  geom_col(fill = "blue") + theme_minimal()
+  geom_col(fill = "blue") +theme_minimal()
 ```
 
-Grafico Proporciones de Best new Music.
+### 1. 2Grafico Proporciones de Best new Music.
 
-```{r, echo=FALSE}
-#| label: graphics_Proporciones 
+```{r echo=FALSE}
+#| label: graphics_Proporciones
 #| message: false
-#| warning: false
+#| warning: true
+
 ggplot(tb_best, aes(x = fct_infreq(genre), y = after_stat(prop), group = 1)) +
   geom_bar( fill = "lightpink", colour = "darkgray") + theme_minimal() +
   scale_y_continuous(labels = scales::percent)
