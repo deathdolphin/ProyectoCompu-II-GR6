@@ -32,3 +32,18 @@ hist(reviews$score)
 plot(reviews$best_new_music, reviews$score)
 plot(reviews$best_new_music)
 
+#Juntar Géneros y demás variables importantes
+tb_new <- dbGetQuery(dbdb, "SELECT reviews.reviewid, reviews.best_new_music,
+reviews.score, genres.genre
+                     FROM reviews INNER JOIN genres
+                     ON reviews.reviewid = genres.reviewid;")
+
+#Limpiar NA's
+tb_1 <- tb_new[complete.cases(tb_new),]
+
+# Preparar dataframe para cálculos necesarios
+tb_2 <- tb_1 %>% mutate (n = 1) %>% group_by(genre) %>% mutate(N = sum(n)) %>%
+  mutate(avg = mean(score)/N)
+
+
+
