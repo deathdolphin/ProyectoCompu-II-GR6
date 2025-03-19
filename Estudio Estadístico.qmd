@@ -40,7 +40,7 @@ Jesus Ochoa
 
 \
 
-## Introducción 
+## Introducción
 
 Aquí irá toda la introducción!
 
@@ -48,7 +48,7 @@ Aquí irá toda la introducción!
 
 ### 1. Muestra de datos
 
-Aquí irá el contenido.
+Grafico Average
 
 ```{r, echo=FALSE}
 #| label: load_libraries
@@ -81,14 +81,24 @@ con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
 ```
 
 ```{r, echo=FALSE}
-#| label: your_graphics_chunk
+#| label: graphics_Average
 #| message: false
 #| warning: false
 
-# Aquí puedes añadir tu código para generar gráficos
-# Ejemplo:
-# ggplot(data = your_data, aes(x = your_x, y = your_y)) +
-#   geom_point()
+ggplot(tb_2, aes(x = reorder(genre, N), na.rm = TRUE, y = avg)) +
+  geom_col(fill = "blue") + theme_minimal()
+```
+
+Grafico Proporciones de Best new Music.
+
+```{r, echo=FALSE}
+#| label: graphics_Proporciones 
+#| message: false
+#| warning: false
+ggplot(tb_best, aes(x = fct_infreq(genre), y = after_stat(prop), group = 1)) +
+  geom_bar( fill = "lightpink", colour = "darkgray") + theme_minimal() +
+  scale_y_continuous(labels = scales::percent)
+
 ```
 
 ## Conclusión
