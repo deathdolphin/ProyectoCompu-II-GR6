@@ -199,6 +199,18 @@ ggplot(tb_2, aes(x = score)) + geom_bar(fill = "darkgreen") + theme_minimal() +
 
 En el cual, se puede ver, efectivamente una marcada asímetria positiva, con una media aritmética igual a 7 puntos y una mediana igual a 7.2. También vemos que una puntuación de 10 que siendo la máxima, tiene una frecuencia decididamente desproporcionada respecto al resto de la distribucón. Aquí se denota un sesgo positivo y reseñas polarizadas.
 
+\
+
+\
+
+\
+
+\
+
+\
+
+\
+
 ## Conclusión
 
 La muestra observada de 18.393 reseñas de álbumes músicales de Pitchfork.com parece presentar sesgos que ya son conocidos en la literatura sobre críticas de productos para el consumidor, una gran mayoría de reseñas positivas, muy positivas, además de cantidades anómalas de puntuaciones extremas, o muy positivas, o muy negativas.
