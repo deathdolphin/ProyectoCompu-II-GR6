@@ -41,6 +41,20 @@ Su atractivo radica en la capacidad de las reseñas para funcionar como guía pa
 
 Se ha encontrado que las reseñas online suelen ser bastante polarizadas, dibujando una curva con un sesgo positivo y colas gruesas, representando una asimetría positiva con una alta cantidad de valores atípicos en ambos extremos (Fritz 2016), por lo que se ha puesto en duda que tan útiles son las reseñas en realidad. Este estudio evalúa una base de datos extraída de Kaggle, que contiene más de 18.000 reseñas de álbumes musicales producidas por Pitchfork.com, en el que se observará si existe dicho sesgo en cuanto a críticas positivas y se explorará la posibilidad de sesgo respecto a géneros musicales, pues Pitchfork.com ha producido mayoritariamente reseñas de álbumes de rock, planteando la posibilidad de calificaciones por encima o debajo de la media.
 
+\
+
+\
+
+\
+
+\
+
+\
+
+\
+
+\
+
 ## Contenido
 
 ### 1. Muestra de datos
@@ -94,19 +108,15 @@ years <- dbGetQuery(dbdb, "SELECT * FROM years")
 #library(kableExtra)
 
 genres$genre <- as.factor(genres$genre)
-reviews$best_new_music <- as.factor(reviews$best_new_music)
-summary(reviews)
+
 
 # Resumen de 'genres'
-tabla_genres <- kable(summary(genres), caption = "Resumen de genres") %>%
+tabla_genres <- kable(summary(genres), caption = "Resumen de generos") %>%
   kable_styling(bootstrap_options = "striped", full_width = F)
 
 # Mostrar las tabla
 tabla_genres
 
-
-#Primeros Gráficos
-hist(reviews$score)
 
 #Juntar Géneros y demás variables importantes
 tb_new <- dbGetQuery(dbdb, "SELECT reviews.reviewid, reviews.best_new_music,
@@ -125,7 +135,7 @@ tb_2 <- tb_1 %>% mutate (n = 1) %>% group_by(genre) %>% mutate(N = sum(n)) %>%
 tb_best <- tb_2 %>% filter(best_new_music == 1)
 ```
 
-### 1. 1 Grafico Average
+### 1.1 Grafico Average
 
 ```{r, echo=FALSE}
 #| label: graphics_Average
@@ -137,7 +147,7 @@ ggplot(tb_2, aes(x = reorder(genre, N), na.rm = TRUE, y = avg)) +
   geom_col(fill = "blue") +theme_minimal() +coord_flip()
 ```
 
-### 1. 2Grafico Proporciones de Best new Music.
+### 1.2 Grafico Proporciones de Best new Music.
 
 ```{r echo=FALSE}
 #| label: graphics_Proporciones
@@ -148,6 +158,26 @@ ggplot(tb_best, aes(x = fct_infreq(genre), y = after_stat(prop), group = 1)) +
   geom_bar( fill = "lightpink", colour = "darkgray") + theme_minimal() +coord_flip() +
   scale_y_continuous(labels = scales::percent)
 
+```
+
+### 1.3 Histograma de Reviews
+
+```{r echo=FALSE}
+#| label: graphics_histograma
+#| message: false
+#| warning: true
+
+datos <- as.numeric(reviews$score)
+
+ggplot(data.frame(score = datos), aes(x = score)) +
+  geom_histogram(binwidth = 1, fill = "lightgreen", color = "black") + # Ajusta binwidth aquí
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 20),
+    axis.title = element_text(size = 16),
+    axis.text = element_text(size = 14)
+  ) +
+  labs(title = "Histograma de Reviews", x = "Puntuación", y = "Frecuencia")
 ```
 
 ## Conclusión
