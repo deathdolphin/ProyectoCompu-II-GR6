@@ -1,0 +1,70 @@
+---
+title: "Estudio Estadístico Sobre la Presencia de Sesgo Crítico en Reseñas Musicales de Pitchfork.com"
+author: "Armando Delfin, Gabriel Di Buongrazio y Miguel Rodriguez"
+format: pdf
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Introducción
+
+Aquí irá toda la introducción!
+
+## Contenido
+
+### 1. Muestra de datos
+
+Aquí irá el contenido.
+
+```{r}
+#| label: load_libraries
+#| message: false
+#| warning: false
+
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load(
+  tidyverse, DescTools, moments, forcats, scales, DBI, RSQLite, dbplyr, odbc, flextable,
+  ftExtra, svglite
+)
+```
+
+```{r}
+#| label: connect_database
+#| message: false
+#| warning: false
+
+
+# Formato de la ruta : "C:/users/*tu nombre de usuario*/*La carpeta de la db*/*nombre de la db*
+
+# Ruta a la base de datos (asegúrate de que sea correcta)
+db_path <- "C:/Users/arman/Proyect.database/pitchforkcopy.sqlite"
+
+# Establecer la conexión
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
+
+# Importante usar la función dbDisconnect(dbdb) antes de cerrar la sesión de R.
+
+```
+
+```{r}
+#| label: your_graphics_chunk
+#| message: false
+#| warning: false
+
+# Aquí puedes añadir tu código para generar gráficos
+# Ejemplo:
+# ggplot(data = your_data, aes(x = your_x, y = your_y)) +
+#   geom_point()
+```
+
+## Conclusión
+
+Aquí irá toda la conclusión!
+
+## Bibliografía
+
+Aquí irá toda la bibliografía!
